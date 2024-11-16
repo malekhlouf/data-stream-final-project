@@ -1,33 +1,24 @@
 from kafka import KafkaConsumer
 import json
-import logging
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'utils')))
+from utils.sliding_window import add_to_window, slide_window
+import config
 
-# Set up logging to track what the consumer is doing
-logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger(__name__)
-
-# Kafka configurations
-KAFKA_BROKER = "localhost:9092"  # Update if your Kafka broker is on a different address
-KAFKA_TOPIC = "stock_data"  # The topic where the stock data is being produced
-
-# Initialize Kafka consumer
+# Initialize the Kafka consumer
 consumer = KafkaConsumer(
-    KAFKA_TOPIC,
-    bootstrap_servers=KAFKA_BROKER,
-    value_deserializer=lambda x: json.loads(x.decode('utf-8')),  # Deserialize message from JSON
-    auto_offset_reset='earliest',  # Start reading at the earliest message in the topic
-    group_id="stock_data_group"  # Consumer group (useful for handling multiple consumers)
+    config.KAFKA_TOPIC,
+    bootstrap_servers=config.KAFKA_SERVER,
+    group_id="stock-consumer-group",
+    value_deserializer=lambda m: json.loads(m.decode('utf-8'))  # Deserialize JSON data
 )
 
 def consume_stock_data():
-    """Consumes stock data messages from Kafka."""
-    logger.info("Consumer started, waiting for messages...\n")
     for message in consumer:
-        # Each message received is a Kafka message
         stock_data = message.value
-        print(f"\nReceived stock data: {stock_data}\n")
-        # logger.info(f"Received stock data: {stock_data}\n")
-        # Here you can process the stock data further (e.g., visualize, store in a database, etc.)
+        add_to_window(stock_data)
+        slide_window()
 
 if __name__ == "__main__":
     consume_stock_data()

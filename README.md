@@ -6,15 +6,15 @@
 	- python-dotenv
 	- kafka-python
 - Kafka 3.9.0
-- Polygon.io account
-	- Create an API key
-	- Store the key in a .env at the root of the project : POLYGON_API_KEY="{your-api-key}"
+- RAPID API account
+	- enable Yahoo Finance, copy the API-key
+	- Store the key in a .env at the root of the project : RAPIDAPI_KEY="{your-api-key}"
 
 ## Description
 
-This project streams stock data using the Polygon.io API, processes it with Kafka, and consumes the data through a Kafka consumer.
+This project streams real time stock data using the RAPID API, processes it with Kafka, and consumes the data through a Kafka consumer.  
 
-The setup has been tested locally and the producer-consumer Kafka pattern works seamlessly.
+The data (stock price so far) is then aggregated every minute over a 10 minute window.  
 
 ## How to run 
 

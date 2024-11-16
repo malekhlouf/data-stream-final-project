@@ -1,30 +1,28 @@
+import json
+from kafka import KafkaProducer
 import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'utils')))
+from utils.yahoo_finance_api import get_real_time_stock_price
 
-# Add the project root to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from kafka import KafkaProducer
-import json
+import config
 import time
-from utils.polygon_api import get_stock_data  # Adjust the import path if needed
-from config.kafka_config import KAFKA_BROKER, KAFKA_TOPIC  # Adjust the import path if needed
 
 # Create Kafka producer
-def create_producer():
-    return KafkaProducer(
-        bootstrap_servers=KAFKA_BROKER,
-        value_serializer=lambda x: json.dumps(x).encode('utf-8')  # Serialize data as JSON
-    )
+producer = KafkaProducer(
+    bootstrap_servers=config.KAFKA_SERVER,
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
 
-# Function to fetch stock data and produce to Kafka
 def produce_stock_data():
-    producer = create_producer()
+    stock_symbol = config.STOCK_SYMBOL
     while True:
-        stock_data = get_stock_data()  # Fetch stock data from Polygon API
-        print("Sending data to Kafka...\n\n")  # Log the stock data
-        producer.send(KAFKA_TOPIC, value=stock_data)  # Send data to Kafka topic
-        time.sleep(30)  # Wait for 30 seconds before fetching the next set of data
+        stock_data = get_real_time_stock_price(stock_symbol)
+        if stock_data:
+            print(f"Data received: {stock_data}")
+            producer.send(config.KAFKA_TOPIC, stock_data)
+            producer.flush()
+        time.sleep(config.REQUEST_INTERVAL.total_seconds())  # Request data every 10 seconds
 
 if __name__ == "__main__":
-    produce_stock_data()  # Start producing stock data to Kafka
+    produce_stock_data()
