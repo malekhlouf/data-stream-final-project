@@ -1,6 +1,6 @@
-from collections import deque
-from datetime import datetime, timedelta
 import logging
+from collections import deque
+from datetime import datetime
 from config import WINDOW_LENGTH, SLIDING_LENGTH
 
 # Set up logging for the sliding window
@@ -34,7 +34,7 @@ def aggregate_window_data():
             "regularMarketPrice"
         ]["raw"]
     avg_close_price = avg_close_price / count if count > 0 else 0
-    
+
     return {"avg_close_price": avg_close_price, "data_points": count}
 
 
@@ -46,11 +46,16 @@ def slide_window():
 
     # If it's time to aggregate and log the window data
     if current_time - last_slide_time >= SLIDING_LENGTH:
-        print(f"\nAggregating data at {current_time}...")
         aggregated_data = aggregate_window_data()
         if aggregated_data:
-            print(f"\nAggregated Data (Last 2 Minutes): {aggregated_data}\n")
+            print(
+                f"Aggregated Data ({aggregated_data['data_points']} data points : Last {SLIDING_LENGTH})"
+            )
+            for key, val in aggregated_data.items():
+                if key != "data_points":
+                    print(f"\t{key}: {val}")
+            print()
         else:
-            print("\nNo data available for aggregation.\n")
+            print("No data available for aggregation.\n")
 
         last_slide_time = current_time

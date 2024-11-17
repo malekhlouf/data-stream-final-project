@@ -1,41 +1,30 @@
 # Final Project (Data Streaming)
 
+## Description
+
+This project streams real time stock data using the Rapid API (Yahoo Finance). The Kafka *Producer* sends the data to the *Consumer* which passes it to a *Sliding Window* script to aggregate the data. 
+
 ## Requirements
 
+- Kafka 3.9.0
 - Python 3.11.10 (above versions might pose some problems)
 	- python-dotenv
 	- kafka-python
-- Kafka 3.9.0
+	- requests
 - RAPID API account
-	- enable Yahoo Finance, copy the API-key
-	- Store the key in a .env at the root of the project : RAPIDAPI_KEY="{your-api-key}"
-
-## Description
-
-This project streams real time stock data using the RAPID API, processes it with Kafka, and consumes the data through a Kafka consumer.  
-
-The data (stock price so far) is then aggregated every minute over a 10 minute window.  
+	- enable Yahoo Finance, copy the API-key (X-RapidAPI-Key)
+	- Store the key in a **.env** file at the root of the project (cf. **.env.template**)
 
 ## How to run 
 
-On 4 terminal tabs run these commands :
+1. Open the **config.py** file and modify it according to your installation and to what you want to observe (stock_symbol, window length, sliding interval, request interval ...).
 
-- Start Zookeeper (Kafka needs Zookeeper to run):
+2. Open a terminal in the root folder of the project and run :  
 ```bash
-/opt/homebrew/Cellar/kafka/3.9.0/libexec/bin/zookeeper-server-start.sh /opt/homebrew/etc/kafka/zookeeper.properties
-```
-- Start Kafka Broker:
-```bash
-/opt/homebrew/Cellar/kafka/3.9.0/libexec/bin/kafka-server-start.sh /opt/homebrew/etc/kafka/server.properties
-```
-- Run the Consumer (consumes the stock data from Kafka):
-```bash
-python consumer/stock_data_consumer.py
-```
-- Run the Producer (produces stock data to Kafka from the Polygon API):
-```bash
-python producer/stock_data_producer.py
+python main.py
 ```
 
-Change the above paths according to your kafka installation.
-
+3. To stop the execution of the program type :  
+```bash
+Ctrl+C
+```
