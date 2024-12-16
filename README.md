@@ -6,6 +6,7 @@ This project streams real time stock data using the Rapid API (Yahoo Finance). T
 
 ## Requirements
 
+- MacOS or Linux
 - Kafka 3.9.0
 - Python 3.11.10 (above versions might pose some problems)
 	- python-dotenv
@@ -17,7 +18,9 @@ This project streams real time stock data using the Rapid API (Yahoo Finance). T
 
 ## How to run 
 
-1. Open the **config.py** file and modify it according to your installation and to what you want to observe (stock_symbol, window length, sliding interval, request interval ...).
+1. Open the **config.py** file and modify it according to your installation and to what you want to observe (stock_symbol, window length, sliding interval, request interval ...).  
+  
+2. In the **yahoo_finance_api.py** file, uncomment the part for real-time data and comment the testing line.
 
 2. Open a terminal in the root folder of the project and run :  
 ```bash
@@ -25,6 +28,7 @@ python main.py
 ```
 
 3. To stop the execution of the program type :  
-```bash
+`
 Ctrl+C
-```
+`
+for each window (zookeeper, kafka, and the main window where the aggregation is displayed)

@@ -1,0 +1,5 @@
+- How to setup the main.py properly.
+- How to get flink to work (to no avail, so far).
+- Help with debugging some errors.
+- Help with git commands for merging branches.
+- in the main: how to launch separately zookeeper and kafka ...

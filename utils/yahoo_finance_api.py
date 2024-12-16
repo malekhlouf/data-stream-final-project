@@ -10,7 +10,7 @@ def get_real_time_stock_price(symbol: str):
     if not api_key:
         raise EnvironmentError("RAPIDAPI_KEY not found in environment variables")
     
-    ## Uncomment for true real-time data : 
+    ## Uncomment following lines for true real-time data : 
     # url = f"https://yahoo-finance166.p.rapidapi.com/api/stock/get-price?region=US&symbol={symbol}"
     # headers = {
     #     'x-rapidapi-host': 'yahoo-finance166.p.rapidapi.com',
