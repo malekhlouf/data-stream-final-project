@@ -24,13 +24,11 @@ processes = []
 
 
 def is_zookeeper_ready():
-    """Check if Zookeeper is listening on port 2181."""
-    zookeeper_host = ZOOKEEPER_HOST
-    zookeeper_port = ZOOKEEPER_PORT
+    """Check if Zookeeper is listening on port ZOOKEEPER_PORT."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(5)
     try:
-        sock.connect((zookeeper_host, zookeeper_port))
+        sock.connect((ZOOKEEPER_HOST, ZOOKEEPER_PORT))
         return True
     except socket.error:
         return False
@@ -39,17 +37,14 @@ def is_zookeeper_ready():
 
 
 def start_zookeeper():
-    """Start Zookeeper and wait for it to be ready."""
-    zookeeper = subprocess.Popen(
-        [
-            ZOOKEEPER_SERVER_START,
-            ZOOKEEPER_PROPERTIES,
-        ],
-        env=env,
-        stdout=subprocess.PIPE,  # Capture stdout
-        stderr=subprocess.PIPE,  # Capture stderr in case of errors
-    )
-    processes.append(zookeeper)
+    """Start Zookeeper in a new terminal tab or window and wait for it to be ready."""
+    print("Starting Zookeeper in a new terminal...")
+    if sys.platform == "darwin":  # macOS
+        os.system(f"osascript -e 'tell application \"Terminal\" to do script \"{ZOOKEEPER_SERVER_START} {ZOOKEEPER_PROPERTIES}\"'")
+    elif sys.platform == "linux" or sys.platform == "linux2":  # Linux
+        os.system(f"gnome-terminal -- bash -c '{ZOOKEEPER_SERVER_START} {ZOOKEEPER_PROPERTIES}; exec bash'")
+    else:
+        print("Unsupported platform for opening new terminal tabs")
 
     # Wait for Zookeeper to be ready
     while not is_zookeeper_ready():
@@ -59,9 +54,7 @@ def start_zookeeper():
 
 
 def is_kafka_ready():
-    """Check if Kafka is listening on port 9092."""
-    kafka_host = KAFKA_HOST
-    kafka_port = KAFKA_PORT
+    """Check if Kafka is listening on port KAFKA_PORT."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(5)
     try:
@@ -74,17 +67,14 @@ def is_kafka_ready():
 
 
 def start_kafka():
-    """Start Kafka and wait for it to be ready."""
-    kafka = subprocess.Popen(
-        [
-            KAFKA_SERVER_START,
-            KAFKA_SERVER_PROPERTIES,
-        ],
-        env=env,
-        stdout=subprocess.PIPE,  # Capture stdout to check when it's ready
-        stderr=subprocess.PIPE,  # Capture stderr in case of errors
-    )
-    processes.append(kafka)
+    """Start Kafka in a new terminal tab or window and wait for it to be ready."""
+    print("Starting Kafka in a new terminal...")
+    if sys.platform == "darwin":  # macOS
+        os.system(f"osascript -e 'tell application \"Terminal\" to do script \"{KAFKA_SERVER_START} {KAFKA_SERVER_PROPERTIES}\"'")
+    elif sys.platform == "linux" or sys.platform == "linux2":  # Linux
+        os.system(f"gnome-terminal -- bash -c '{KAFKA_SERVER_START} {KAFKA_SERVER_PROPERTIES}; exec bash'")
+    else:
+        print("Unsupported platform for opening new terminal tabs")
 
     # Wait for Kafka to be ready
     while not is_kafka_ready():
