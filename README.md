@@ -32,3 +32,17 @@ python main.py
 Ctrl+C
 `
 for each window (zookeeper, kafka, and the main window where the aggregation is displayed)
+
+## Screenshots
+
+- setup and program start-up:
+![plot](./screenshots/setup.png)
+- When pressing enter, you will see 2 popup terminal windows appear on top of this existing window. One if for Zookeeper and one for Kafka:
+![plot](./screenshots/popups.png)
+- To see the part of the program that interests us, you'll just need to switch back to switch back to the original window (without closing the other two):
+![plot](./screenshots/working.png)
+- In the screenshot above, the code was runing with the testing module (in *yahoo_finance_api.py*) because of requests limits imposed by the api.  
+But as you can see, the program will notify you whenever it receives new data from the api and, at a time interval defined by the sliding window, it will show you the aggregated data (here it's only the avg close price of AAPL stock).  
+  
+Depending on the needs of the user, the observed stock could be changed from AAPL, as well as the time intervals for the sliding window and the data requests, by changing the highlighted values in the screenshot below (from the *config.py* file): 
+![plot](./screenshots/config.png)
